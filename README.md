@@ -20,6 +20,7 @@ Full text: **Legal notice** accordion in the plugin admin UI (DE/EN).
 ## Table of contents
 
 - [Features](#features)
+- [Screenshots (admin UI)](#screenshots-admin-ui)
 - [Data sources](#data-sources)
 - [Supported states](#supported-states)
 - [Installation](#installation)
@@ -43,6 +44,18 @@ Full text: **Legal notice** accordion in the plugin admin UI (DE/EN).
   `$LBHOMEDIR/data/plugins/schulferien/`; `preupgrade.sh` / `postupgrade.sh` restore after LoxBerry wipes plugin folders.
 - **MQTT** — LoxBerry broker auto-detect from `general.json` / MQTT Gateway credentials, or manual host/port/user.
 - **Icons:** `icons/icon_*.png` → LoxBerry overview; `webfrontend/htmlauth/icon_64.png` in plugin header. `ICON=icon_64.png` in `plugin.cfg`.
+
+## Screenshots (admin UI)
+
+German admin UI previews (representative mockups of the plugin web interface):
+
+**Einstellungen / Settings**
+
+![Schulferien plugin: Settings tab (German)](docs/screenshots/settings-de.jpg)
+
+**Monitor** (status, holiday table, MQTT actions)
+
+![Schulferien plugin: Monitor tab (German)](docs/screenshots/monitor-de.jpg)
 
 ## Data sources
 
@@ -280,4 +293,4 @@ python3 tools/generate_icons.py
 
 Community LoxBerry plugin — **Schulferien MQTT Bridge**. Not affiliated with the API operators.
 
-Maintainer: Robert Stein (`Examlpe@examle.invalid`)
+Maintainer: Robert Stein
