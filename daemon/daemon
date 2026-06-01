@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Start Schulferien MQTT bridge in background (LoxBerry boot daemon must exit quickly).
+
+DAEMON_NAME="$(basename "$0")"
+DAEMON_DIR="$(cd "$(dirname "$0")" && pwd)"
+LB_HOME="$(cd "${DAEMON_DIR}/../../.." && pwd)"
+PLUGIN_BIN_BASE="${LB_HOME}/bin/plugins"
+TARGET_SCRIPT="${PLUGIN_BIN_BASE}/${DAEMON_NAME}/schulferien_daemon.pl"
+
+if [ ! -f "${TARGET_SCRIPT}" ]; then
+  for candidate in "${PLUGIN_BIN_BASE}"/*/schulferien_daemon.pl; do
+    if [ -f "$candidate" ]; then
+      TARGET_SCRIPT="$candidate"
+      break
+    fi
+  done
+fi
+
+[ -f "${TARGET_SCRIPT}" ] || exit 0
+
+PLUGIN_FOLDER="$(basename "$(dirname "${TARGET_SCRIPT}")")"
+LOG_DIR="${LB_HOME}/log/plugins/${PLUGIN_FOLDER}"
+LOG_FILE="${LOG_DIR}/schulferien.log"
+
+mkdir -p "${LOG_DIR}" 2>/dev/null || true
+
+if pgrep -f "schulferien_daemon.pl" >/dev/null 2>&1; then
+  echo "$(date -Iseconds 2>/dev/null || date) INFO: daemon already running" >> "${LOG_FILE}" 2>/dev/null || true
+  exit 0
+fi
+
+echo "$(date -Iseconds 2>/dev/null || date) INFO: boot daemon starting background process" >> "${LOG_FILE}" 2>/dev/null || true
+nohup /usr/bin/env perl "${TARGET_SCRIPT}" >> "${LOG_FILE}" 2>&1 &
+
+exit 0

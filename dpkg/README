@@ -1,0 +1,2 @@
+No additional packages required.
+LWP::UserAgent (libwww-perl) is used for HTTP and should be present on LoxBerry.

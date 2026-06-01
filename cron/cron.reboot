@@ -1,0 +1,32 @@
+#!/bin/bash
+
+LB_HOME="/opt/loxberry"
+PLUGIN_FOLDER="schulferien"
+TARGET_SCRIPT="${LB_HOME}/bin/plugins/${PLUGIN_FOLDER}/schulferien_daemon.pl"
+
+if [ ! -f "${TARGET_SCRIPT}" ]; then
+  for candidate in "${LB_HOME}/bin/plugins/"*/schulferien_daemon.pl; do
+    if [ -f "$candidate" ]; then
+      TARGET_SCRIPT="$candidate"
+      PLUGIN_FOLDER="$(basename "$(dirname "$candidate")")"
+      break
+    fi
+  done
+fi
+
+[ -f "${TARGET_SCRIPT}" ] || exit 0
+
+CFG="${LB_HOME}/data/plugins/${PLUGIN_FOLDER}/schulferien.cfg"
+[ -f "${CFG}" ] || CFG="${LB_HOME}/config/plugins/${PLUGIN_FOLDER}/schulferien.cfg"
+[ -f "${CFG}" ] || exit 0
+grep -Eq '^enabled=1\s*$' "${CFG}" || exit 0
+
+LOG_FILE="${LB_HOME}/log/plugins/${PLUGIN_FOLDER}/schulferien.log"
+mkdir -p "${LB_HOME}/log/plugins/${PLUGIN_FOLDER}" 2>/dev/null || true
+
+pkill -f "schulferien_daemon.pl" 2>/dev/null || true
+sleep 1
+echo "$(date -Iseconds 2>/dev/null || date) reboot cron: starting schulferien mqtt daemon" >> "${LOG_FILE}" 2>/dev/null || true
+nohup /usr/bin/env perl "${TARGET_SCRIPT}" >> "${LOG_FILE}" 2>&1 &
+
+exit 0
